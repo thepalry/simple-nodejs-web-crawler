@@ -1,0 +1,26 @@
+{
+  "name": "simple-nodejs-web-crawler",
+  "version": "0.0.1",
+  "description": "simple web crawler module for nodejs",
+  "main": "main.js",
+  "scripts": {
+    "test": "-t"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thepalry/simple-nodejs-web-crawler.git"
+  },
+  "keywords": [
+    "nodejs",
+    "crawler"
+  ],
+  "author": "thepalry",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thepalry/simple-nodejs-web-crawler/issues"
+  },
+  "homepage": "https://github.com/thepalry/simple-nodejs-web-crawler#readme",
+  "dependencies": {
+    "npm": "^5.8.0"
+  }
+}

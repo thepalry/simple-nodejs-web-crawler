@@ -5,6 +5,10 @@ var baseUrl;
 var sParams = [];
 var dParams = [];
 
+var connectionCount = 0;
+var maxConnection = 10;
+var timeInterval = 1;
+
 var cssSelector = [];
 
 exports.makeRequest = function(options) {
@@ -15,10 +19,14 @@ exports.makeRequest = function(options) {
     options.dynamicParams.forEach(dynamicParam => {
         dParams.push(dynamicParam);
     });
+    maxConnection = options.maxConnection;
+    timeInterval = options.timeInterval;
 }
 
-exports.addSelector = function(selector) {
-    cssSelector.push(selector);
+exports.responseHandler = function(options) {
+    options.selectors.forEach(selector => {
+        cssSelector.push(selector);
+    });
 }
 
 exports.request = function(callback) {
@@ -35,7 +43,7 @@ exports.request = function(callback) {
     });
 
     // temporary function for result handling, should be modifed after studying about async procedure of nodejs
-    function temp(result) {
+    function resultCallback(result) {
         result_final.push(result);
         count_result++;
         if(count_result >= final_count) {
@@ -46,27 +54,39 @@ exports.request = function(callback) {
     dParams.forEach(dParam => {
         dParam.value.forEach(dParamValue => {
             var final_url = url + dParam.name + '=' + dParamValue;
-            request({
-                uri: final_url,
-                method: 'GET',
-                headers: {
-                     'Accept-Charset': 'utf-8'
+
+            var requestAttempt = setInterval(() => {
+                if(connectionCount < maxConnection) {
+                    console.log(final_url, connectionCount, maxConnection);
+                    realRequest(final_url, resultCallback);
+                    clearInterval(requestAttempt);
                 }
-            }, function(err, res, body){
-                if(err) {
-                    callback(err, null);
-                }
-                const $ = cheerio.load(body, {
-                    decodeEntities: false
-                });
-        
-                var result = [];
-                cssSelector.forEach(element => {
-                    result.push($(element).text());
-                });
-     
-                temp(result);
-            }); 
+            }, 1000 * timeInterval);
         });
+    });
+}
+
+function realRequest(url, resultCallback) {
+    connectionCount++;
+    request({
+        uri: url,
+        method: 'GET',
+        headers: {
+             'Accept-Charset': 'utf-8'
+        }
+    }, function(err, res, body){
+        connectionCount--;
+        if(err) {
+            callback(err, null);
+        }
+        const $ = cheerio.load(body, {
+            decodeEntities: false
+        });
+
+        var result = [];
+        cssSelector.forEach(element => {
+            result.push($(element).text());
+        });
+        resultCallback(result);
     });
 }

@@ -1,1 +1,1 @@
-Simple and Sample Web crawler module for nodejs.
+Simple Web crawler module for nodejs.

@@ -2,6 +2,7 @@ const request = require('request');
 const cheerio = require('cheerio');
 
 var baseUrl;
+var method;
 var sParams = [];
 var dParams = [];
 
@@ -13,6 +14,7 @@ var cssSelector = [];
 
 exports.makeRequest = function(options) {
     baseUrl = options.url;
+    method = options.method;
     options.staticParams.forEach(staticParam => {
         sParams.push(staticParam);
     });
@@ -57,7 +59,7 @@ exports.request = function(callback) {
 
             var requestAttempt = setInterval(() => {
                 if(connectionCount < maxConnection) {
-                    console.log(final_url, connectionCount, maxConnection);
+                    console.log(final_url, "connected");
                     realRequest(final_url, resultCallback);
                     clearInterval(requestAttempt);
                 }
@@ -70,14 +72,14 @@ function realRequest(url, resultCallback) {
     connectionCount++;
     request({
         uri: url,
-        method: 'GET',
+        method: method,
         headers: {
              'Accept-Charset': 'utf-8'
         }
     }, function(err, res, body){
         connectionCount--;
         if(err) {
-            callback(err, null);
+            resultCallback(err, null);
         }
         const $ = cheerio.load(body, {
             decodeEntities: false

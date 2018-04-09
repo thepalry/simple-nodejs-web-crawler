@@ -7,6 +7,7 @@ for(var i=1;i<=10;i++) {
 
 crawler.makeRequest({
     url : 'http://realestate.daum.net/iframe/maemul/DanjiInfo.daum',
+    method : 'GET',
     staticParams : [
         { name : 'tabName', value : 'info'}
     ],

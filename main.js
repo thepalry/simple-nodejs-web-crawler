@@ -63,7 +63,7 @@ exports.request = function(callback) {
                     realRequest(final_url, resultCallback);
                     clearInterval(requestAttempt);
                 }
-            }, 1000 * timeInterval);
+            }, timeInterval);
         });
     });
 }

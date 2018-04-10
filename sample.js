@@ -15,7 +15,7 @@ crawler.makeRequest({
         { name : 'danjiId', value : rletNoArray}
     ],
     maxConnection : 5,
-    timeInterval : 0.5
+    timeInterval : 500
 });
 
 crawler.responseHandler({

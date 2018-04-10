@@ -1,7 +1,7 @@
 const crawler = require('./main');
 
 var rletNoArray = [];
-for(var i=1;i<=10;i++) {
+for(var i=1;i<=1000;i++) {
     rletNoArray.push(i);
 }
 
@@ -14,7 +14,7 @@ crawler.makeRequest({
     dynamicParams : [
         { name : 'danjiId', value : rletNoArray}
     ],
-    maxConnection : 5,
+    maxConnection : 10,
     timeInterval : 500
 });
 

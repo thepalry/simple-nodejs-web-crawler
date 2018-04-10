@@ -6,9 +6,8 @@ var method;
 var sParams = [];
 var dParams = [];
 
-var connectionCount = 0;
 var maxConnection = 10;
-var timeInterval = 1;
+var timeInterval = 100;
 
 var cssSelector = [];
 
@@ -39,12 +38,19 @@ exports.request = function(callback) {
 
     var result_final = [];
     var count_result = 0;
-    var final_count = 0;
+    var final_count = 1;
     dParams.forEach(dParam => {
-        final_count += dParam.value.length;
+        final_count *= dParam.value.length;
     });
 
-    // temporary function for result handling, should be modifed after studying about async procedure of nodejs
+    // dParam이 여럿인 경우 핸들링 해야함
+    var finalUrls = [];
+    dParams.forEach(dParam => {
+        dParam.value.forEach(dParamValue => {
+            finalUrls.push(url + dParam.name + '=' + dParamValue);
+        });
+    });
+
     function resultCallback(result) {
         result_final.push(result);
         count_result++;
@@ -53,23 +59,17 @@ exports.request = function(callback) {
         }
     }
 
-    dParams.forEach(dParam => {
-        dParam.value.forEach(dParamValue => {
-            var final_url = url + dParam.name + '=' + dParamValue;
-
-            var requestAttempt = setInterval(() => {
-                if(connectionCount < maxConnection) {
-                    console.log(final_url, "connected");
-                    realRequest(final_url, resultCallback);
-                    clearInterval(requestAttempt);
-                }
-            }, timeInterval);
-        });
-    });
+    for(var i=0;i<maxConnection;i++) {
+        realRequest(finalUrls, resultCallback);
+    }
 }
 
-function realRequest(url, resultCallback) {
-    connectionCount++;
+function realRequest(urls, resultCallback) {
+    if(urls.length <= 0) {
+        return;
+    }
+    var url = urls.pop();
+    console.log(url , " connection attempt");
     request({
         uri: url,
         method: method,
@@ -77,18 +77,16 @@ function realRequest(url, resultCallback) {
              'Accept-Charset': 'utf-8'
         }
     }, function(err, res, body){
-        connectionCount--;
         if(err) {
             resultCallback(err, null);
         }
-        const $ = cheerio.load(body, {
-            decodeEntities: false
-        });
+        const $ = cheerio.load(body, {decodeEntities: false});
 
         var result = [];
         cssSelector.forEach(element => {
             result.push($(element).text());
         });
         resultCallback(result);
+        setTimeout(realRequest, 500, urls, resultCallback);
     });
 }

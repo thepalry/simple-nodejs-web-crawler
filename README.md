@@ -8,7 +8,7 @@
 예제 코드 : sample.js
 
 ## example
-/`
+/'
 crawler.makeRequest({                                   // 크롤링 할 대상 페이지 설정
     url : url,                                          // target url
     method : 'GET',                                     // http method
@@ -35,4 +35,4 @@ crawler.request(function(err, result) {                 // 요청 및 결과 콜
     }
     console.log(result);
 });
-/`
+/'

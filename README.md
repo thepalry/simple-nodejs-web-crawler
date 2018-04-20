@@ -8,31 +8,30 @@
 예제 코드 : sample.js
 
 ## example
-/'
-crawler.makeRequest({                                   // 크롤링 할 대상 페이지 설정
-    url : url,                                          // target url
-    method : 'GET',                                     // http method
-    staticParams : [                                    // static url parameter
-        { name : 'type', value : 'test'}
-    ],
-    dynamicParams : [                                   // dynamic url parameter (array)
-        { name : 'id', value : [1, 2, 3, 4, 5]}
-    ],
-    maxConnection : 10,                                 // 전체 connection 수 및 매 커넥션 별 요청 주기
-    timeInterval : 500
-});
 
-crawler.responseHandler({                               // 받아온 페이지의 내용 중 정보 선택자(jQuery 선택자)
-    selectors : [
-        "#id > name",
-        "#value"
-    ]
-});
+    crawler.makeRequest({                                   // 크롤링 할 대상 페이지 설정
+        url : url,                                          // target url
+        method : 'GET',                                     // http method
+        staticParams : [                                    // static url parameter
+            { name : 'type', value : 'test'}
+        ],
+        dynamicParams : [                                   // dynamic url parameter (array)
+            { name : 'id', value : [1, 2, 3, 4, 5]}
+        ],
+        maxConnection : 10,                                 // 전체 connection 수 및 매 커넥션 별 요청 주기
+        timeInterval : 500
+    });
 
-crawler.request(function(err, result) {                 // 요청 및 결과 콜백
-    if(err) {
-        console.log(err);
-    }
-    console.log(result);
-});
-/'
+    crawler.responseHandler({                               // 받아온 페이지의 내용 중 정보 선택자(jQuery 선택자)
+        selectors : [
+            "#id > name",
+            "#value"
+        ]
+    });
+
+    crawler.request(function(err, result) {                 // 요청 및 결과 콜백
+        if(err) {
+            console.log(err);
+        }
+        console.log(result);
+    });
